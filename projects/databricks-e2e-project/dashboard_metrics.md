@@ -28,7 +28,6 @@
 Filter by restaurant, date range;
 
 * Review Volume over time
-* AI powered insights (last X days)
 * Sentiment trend (Line chart showing positive/negative trend over time)
 * Top (3) praised items 
 * Most (3) criticized items 
