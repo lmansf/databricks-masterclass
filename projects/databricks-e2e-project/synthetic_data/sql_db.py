@@ -15,7 +15,7 @@ def generate_restaurants():
             "name": "Spice Route Downtown",
             "city": "Abu Dhabi",
             "country": "UAE",
-            "address": "Corniche Road, Abu Dhabi",
+            "address": "Corniche Road Abu Dhabi",
             "opening_date": "2023-01-15",
             "phone": "+971-2-123-4567"
         },
@@ -24,7 +24,7 @@ def generate_restaurants():
             "name": "Spice Route Al Wahda",
             "city": "Abu Dhabi",
             "country": "UAE",
-            "address": "Al Wahda Mall, Abu Dhabi",
+            "address": "Al Wahda Mall Abu Dhabi",
             "opening_date": "2023-06-20",
             "phone": "+971-2-234-5678"
         },
@@ -42,7 +42,7 @@ def generate_restaurants():
             "name": "Spice Route Mall of Emirates",
             "city": "Dubai",
             "country": "UAE",
-            "address": "Mall of the Emirates, Dubai",
+            "address": "Mall of the Emirates Dubai",
             "opening_date": "2023-09-05",
             "phone": "+971-4-456-7890"
         },
@@ -139,7 +139,6 @@ def generate_menu_items():
 # ============================================
 def generate_customers(n=500):
     customers = []
-    loyalty_tiers = ["Bronze", "Silver", "Gold", "Platinum"]
     
     for i in range(n):
         join_date = fake.date_between(start_date='-2y', end_date='today')
@@ -150,10 +149,7 @@ def generate_customers(n=500):
             "email": fake.email(),
             "phone": fake.phone_number(),
             "city": random.choice(["Abu Dhabi", "Dubai", "Sharjah", "Ajman"]),
-            "loyalty_tier": random.choices(loyalty_tiers, weights=[40, 30, 20, 10])[0],
             "join_date": join_date.strftime("%Y-%m-%d"),
-            "total_orders": random.randint(1, 150),
-            "lifetime_spend": round(random.uniform(100, 15000), 2)
         }
         customers.append(customer)
     
