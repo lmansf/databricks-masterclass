@@ -92,7 +92,7 @@ def generate_review_text(rating, dishes_list):
         highlight=highlight
     )
     
-    return review
+    return review.replace(',', ' ')
 
 # ============================================
 # GENERATE REVIEWS WITH IMAGES
@@ -136,7 +136,7 @@ def generate_customer_reviews(review_percentage=0.35):
         
         # Review date: 1-7 days after order
         order_date = datetime.fromisoformat(order['timestamp'])
-        review_date = order_date + timedelta(days=random.randint(1, 7))
+        review_ts = order_date + timedelta(days=random.randint(1, 7))
         
         # Generate review ID
         review_id = f"REV-{len(reviews) + 1:06d}"
@@ -148,8 +148,7 @@ def generate_customer_reviews(review_percentage=0.35):
             "restaurant_id": order['restaurant_id'],
             "review_text": review_text,
             "rating": rating,
-            "review_date": review_date.isoformat(),
-            "created_at": review_date.isoformat()
+            "review_timestamp": review_ts.isoformat()
         }
         
         reviews.append(review)
@@ -158,7 +157,7 @@ def generate_customer_reviews(review_percentage=0.35):
             print(f"Generated {len(reviews)} reviews...")
     
     df_reviews = pd.DataFrame(reviews)
-    df_reviews = df_reviews.sort_values('review_date').reset_index(drop=True)
+    df_reviews = df_reviews.sort_values('review_timestamp').reset_index(drop=True)
     df_reviews.to_csv(os.path.join(script_dir, "data", "customer_reviews.csv"), index=False)
     
     # Statistics
@@ -169,7 +168,7 @@ def generate_customer_reviews(review_percentage=0.35):
     print(f"Saved to: customer_reviews.csv")
     print(f"\nRating Distribution:")
     print(df_reviews['rating'].value_counts().sort_index())
-    print(f"Date range: {df_reviews['review_date'].min()} to {df_reviews['review_date'].max()}")
+    print(f"Date range: {df_reviews['review_timestamp'].min()} to {df_reviews['review_timestamp'].max()}")
 
 # ============================================
 # MAIN
