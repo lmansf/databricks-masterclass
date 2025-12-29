@@ -1,4 +1,8 @@
 if __name__ == "__main__":
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    os.makedirs(os.path.join(script_dir, "data"), exist_ok=True)
+
     from sql_db import generate_data_for_sql_db
     generate_data_for_sql_db()
     
