@@ -51,44 +51,34 @@ CREATE TABLE databrickse2eproj.restaurants (
     phone VARCHAR(256)
 );
 
--- 1. ENABLE CHANGE TRACKING ON DB
-ALTER DATABASE [db-databrickse2eproj] SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 14 DAYS, AUTO_CLEANUP = ON);
-
--- 2. ENABLE CHANGE TRACKING ON TABLES
-ALTER TABLE databrickse2eproj.customers ENABLE CHANGE_TRACKING;
-ALTER TABLE databrickse2eproj.historical_orders ENABLE CHANGE_TRACKING;
-ALTER TABLE databrickse2eproj.menu_items ENABLE CHANGE_TRACKING;
-ALTER TABLE databrickse2eproj.restaurants ENABLE CHANGE_TRACKING;
-ALTER TABLE databrickse2eproj.reviews ENABLE CHANGE_TRACKING;
-
--- 3. ENABLE CDC on DB
-USE [db-databrickse2eproj];
-EXEC sys.sp_cdc_enable_db;
-
--- 4. ENABLE CDC ON TABLES --
-EXEC sys.sp_cdc_enable_table
-    @source_schema = N'databrickse2eproj',
-    @source_name   = N'customers',
-    @role_name     = NULL;
-GO;
-
-EXEC sys.sp_cdc_enable_table
-    @source_schema = N'databrickse2eproj',
-    @source_name   = N'menu_items',
-    @role_name     = NULL;
-GO;
-
-EXEC sys.sp_cdc_enable_table
-    @source_schema = N'databrickse2eproj',
-    @source_name   = N'restaurants',
-    @role_name     = NULL;
-GO;
-
-EXEC sys.sp_cdc_enable_table
-    @source_schema = N'databrickse2eproj',
-    @source_name   = N'reviews',
-    @role_name     = NULL;
-GO;
-
 -- Now run projects/databricks-e2e-project/sql/utility_script.sql
 -- https://docs.databricks.com/aws/en/ingestion/lakeflow-connect/sql-server-utility
+
+ALTER DATABASE DB_NAME SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 14 DAYS, AUTO_CLEANUP = ON);
+-- Replace DB_NAME
+
+ALTER TABLE TBL_NAME ENABLE CHANGE_TRACKING;
+-- Replace TBL_NAME and run for the remaining tables
+
+EXEC sys.sp_cdc_enable_db;
+
+EXEC sys.sp_cdc_enable_table
+    @source_schema = N'dbo',
+    @source_name   = N'historical_orders',
+    @role_name     = NULL;
+GO;
+-- Run for the remaining tables
+
+-- Grant system permissions only
+EXEC dbo.lakeflowFixPermissions
+    @User = 'databrickse2eprojUserAdmin',
+    @Tables = 'ALL';
+
+EXEC dbo.lakeflowSetupChangeTracking
+    @Tables = 'ALL',
+    @User = 'databrickse2eprojUserAdmin';
+
+-- Enable CDC on specific tables
+EXEC dbo.lakeflowSetupChangeDataCapture
+    @Tables = 'ALL',
+    @User = 'databrickse2eprojUserAdmin';
