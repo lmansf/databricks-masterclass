@@ -1,4 +1,4 @@
-CREATE TABLE databrickse2eproj.historical_orders (
+CREATE TABLE SCHEMA_NAME.historical_orders (
     order_id VARCHAR(256) PRIMARY KEY,
     order_timestamp DATETIME2,
     restaurant_id VARCHAR(256),
@@ -10,7 +10,7 @@ CREATE TABLE databrickse2eproj.historical_orders (
     order_status VARCHAR(256)
 );
 
-CREATE TABLE databrickse2eproj.reviews (
+CREATE TABLE SCHEMA_NAME.reviews (
     review_id VARCHAR(256) PRIMARY KEY,
     order_id VARCHAR(256),
     customer_id VARCHAR(256),
@@ -20,7 +20,7 @@ CREATE TABLE databrickse2eproj.reviews (
     review_timestamp DATETIME2
 );
 
-CREATE TABLE databrickse2eproj.customers (
+CREATE TABLE SCHEMA_NAME.customers (
     customer_id VARCHAR(256) PRIMARY KEY,
     name VARCHAR(256),
     email VARCHAR(256),
@@ -29,7 +29,7 @@ CREATE TABLE databrickse2eproj.customers (
     join_date DATE,
 );
 
-CREATE TABLE databrickse2eproj.menu_items (
+CREATE TABLE SCHEMA_NAME.menu_items (
     restaurant_id VARCHAR(256),
     item_id VARCHAR(256),
     name VARCHAR(256),
@@ -41,7 +41,7 @@ CREATE TABLE databrickse2eproj.menu_items (
     PRIMARY KEY (restaurant_id, item_id)
 );
 
-CREATE TABLE databrickse2eproj.restaurants (
+CREATE TABLE SCHEMA_NAME.restaurants (
     restaurant_id VARCHAR(256) PRIMARY KEY,
     name VARCHAR(256),
     city VARCHAR(256),
