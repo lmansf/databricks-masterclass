@@ -7,7 +7,6 @@ EH_NAMESPACE = spark.conf.get("eh.namespace")
 EH_NAME = spark.conf.get("eh.name")
 EH_CONN_STR = spark.conf.get("eh.connectionString")
 
-
 KAFKA_OPTIONS = {
     "kafka.bootstrap.servers": f"{EH_NAMESPACE}.servicebus.windows.net:9093",
     "subscribe": EH_NAME,
@@ -20,8 +19,6 @@ KAFKA_OPTIONS = {
     "failOnDataLoss": "true",
     "startingOffsets": "earliest",
 }
-
-
 
 orders_schema = StructType([
     StructField("order_id", StringType(), True),
