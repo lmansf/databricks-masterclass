@@ -1,8 +1,10 @@
+## Table Schemas 
+These are sample schemas (not run and tested) to ideate on the attributes present in the tables in the Medallion layers
 
 ### Bronze Layer (2)
 ```sql
 CREATE TABLE bronze.orders (
-    order_id STRING,
+    order_id STRING PRIMARY KEY,
     order_timestamp TIMESTAMP,
     restaurant_id STRING,
     customer_id STRING,
@@ -17,7 +19,7 @@ CLUSTER BY (DATE(order_timestamp))
 
 
 CREATE TABLE bronze.reviews (
-    review_id STRING,
+    review_id STRING PRIMARY KEY,
     order_id STRING,
     customer_id STRING,
     restaurant_id STRING,
@@ -62,7 +64,8 @@ CREATE TABLE silver.fact_order_items (
     quantity INT,
     unit_price DECIMAL(10,2),
     subtotal DECIMAL(10,2),
-    _ingestion_timestamp TIMESTAMP
+    _ingestion_timestamp TIMESTAMP,
+    PRIMARY KEY (order_id, item_id)
 )
 CLUSTER BY (order_date)
 
@@ -99,7 +102,8 @@ CREATE TABLE silver.dim_menu_items (
     ingredients STRING,
     is_vegetarian BOOLEAN,
     spice_level STRING,  -- None, Mild, Medium, Hot
-    _ingestion_timestamp TIMESTAMP
+    _ingestion_timestamp TIMESTAMP,
+    PRIMARY KEY (restaurant_id, item_id)
 )
 
 
@@ -121,7 +125,7 @@ CLUSTER BY (review_date)
 ### Gold Layer
 ```sql
 CREATE TABLE gold.daily_sales_summary (
-    order_date DATE,
+    order_date DATE PRIMARY KEY,
     total_orders BIGINT,
     total_revenue DECIMAL(12,2),
     avg_order_value DECIMAL(10,2),
@@ -139,7 +143,8 @@ CLUSTER BY (order_date)
 
 
 CREATE TABLE gold.customer_360 (
-    customer_id STRING PRIMARY KEY,
+    customer_id STRING,
+    snapshot_date DATE,
     customer_name STRING,
     email STRING,
     city STRING,
@@ -167,7 +172,8 @@ CREATE TABLE gold.customer_360 (
     is_at_risk BOOLEAN,  -- No order in 90+ days
     is_vip BOOLEAN,  -- Platinum tier OR lifetime_spend > 5000
     
-    _ingestion_timestamp TIMESTAMP
+    _ingestion_timestamp TIMESTAMP,
+    PRIMARY KEY (customer_id, snapshot_date)
 )
 
 CREATE TABLE gold.reviews (
@@ -202,6 +208,7 @@ CLUSTER BY (review_date)
 
 CREATE TABLE gold.restaurant_review_summary (
     restaurant_id STRING PRIMARY KEY,
+    snapshot_date DATE,
     restaurant_name STRING,
     city STRING,
     
@@ -224,6 +231,7 @@ CREATE TABLE gold.restaurant_review_summary (
     last_review_date DATE,
     days_since_last_review INT,
     
-    _created_timestamp TIMESTAMP
+    _ingestion_timestamp TIMESTAMP,
+    PRIMARY KEY (restaurant_id, snapshot_date)
 )
 ```
