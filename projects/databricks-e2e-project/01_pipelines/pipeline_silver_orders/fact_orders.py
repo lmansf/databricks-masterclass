@@ -27,7 +27,7 @@ def fact_orders():
     )
 
     df_fact_orders = (
-        dlt.read_stream("01_bronze.orders")
+        dp.read_stream("01_bronze.orders")
         .withColumn("order_timestamp", F.to_timestamp(F.col("order_timestamp")))
         .withColumn("order_date", F.to_date(F.col("order_timestamp")))
         .withColumn("order_hour", F.hour(F.col("order_timestamp")))

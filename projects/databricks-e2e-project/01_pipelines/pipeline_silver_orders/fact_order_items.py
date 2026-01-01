@@ -3,8 +3,8 @@ import pyspark.sql.functions as F
 from pyspark.sql.types import *
 
 
-@dlt.table(name="fact_order_items")
-@dlt.expect_all_or_drop({
+@dp.table(name="fact_order_items")
+@dp.expect_all_or_drop({
     "valid_order_id": "order_id IS NOT NULL",
     "valid_order_timestamp": "order_timestamp IS NOT NULL",
     "valid_item_id": "item_id IS NOT NULL",
@@ -26,7 +26,7 @@ def fact_order_items():
     )
 
     df_fact_order_items = (
-        dlt.read_stream("01_bronze.orders")
+        dp.read_stream("01_bronze.orders")
         .withColumn("order_timestamp", F.to_timestamp(F.col("order_timestamp")))
         .withColumn("items_parsed", F.from_json(F.col("items"), items_schema))
         .withColumn("item", F.explode(F.col("items_parsed")))
