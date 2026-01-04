@@ -4,10 +4,10 @@ from pyspark.sql.types import *
 from datetime import datetime
 
 
-@dp.table(
+@dp.materialized_view(
     name="03_gold.d_sales_summary",
     partition_cols=["order_date"],
-    spark_conf={"spark.sql.sources.partitionOverwriteMode": "dynamic"},
+    table_properties={"quality": "gold"},
     comment="Gold layer aggregates with date-based overwrites",
 )
 def d_sales_summary():
