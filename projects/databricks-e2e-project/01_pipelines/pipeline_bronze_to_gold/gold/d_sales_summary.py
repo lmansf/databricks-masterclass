@@ -16,8 +16,8 @@ def d_sales_summary():
         .groupBy("order_date")
         .agg(
             F.countDistinct("order_id").alias("total_orders"),
-            F.sum("total_amount").alias("total_revenue"),
-            F.avg("total_amount").alias("avg_order_value"),
+            F.sum("total_amount").cast("decimal(10,2)").alias("total_revenue"),
+            F.avg("total_amount").cast("decimal(10,2)").alias("avg_order_value"),
             F.countDistinct("customer_id").alias("unique_customers"),
             F.countDistinct("restaurant_id").alias("unique_restaurants"),
             F.sum(F.when(F.col("order_type") == "dine_in", 1).otherwise(0)).alias(
@@ -30,7 +30,6 @@ def d_sales_summary():
                 "delivery_orders"
             ),
         )
-        .withColumn("_ingestion_timestamp", F.current_timestamp())
         .select(
             "order_date",
             "total_orders",
@@ -41,7 +40,6 @@ def d_sales_summary():
             "dine_in_orders",
             "takeaway_orders",
             "delivery_orders",
-            "_ingestion_timestamp",
         )
     )
     return df_daily_agg

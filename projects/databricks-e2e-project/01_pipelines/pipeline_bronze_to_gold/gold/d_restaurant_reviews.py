@@ -5,7 +5,6 @@ from pyspark.sql.window import Window
 
 @dp.materialized_view(
     name="03_gold.d_restaurant_reviews",
-    partition_cols=["restaurant_id"],
     table_properties={"quality": "gold"}
 )
 def d_restaurant_reviews():
@@ -33,8 +32,6 @@ def d_restaurant_reviews():
             F.sum(F.when(F.col("sentiment") == "positive", 1).otherwise(0)).alias("sentiment_positive_count"),
             F.sum(F.when(F.col("sentiment") == "neutral", 1).otherwise(0)).alias("sentiment_neutral_count"),
             F.sum(F.when(F.col("sentiment") == "negative", 1).otherwise(0)).alias("sentiment_negative_count"),
-            
-            F.max(F.to_date("review_timestamp")).alias("last_review_date")
         )
     )
 
@@ -48,7 +45,7 @@ def d_restaurant_reviews():
             
             # Review Stats
             F.coalesce(F.col("total_reviews"), F.lit(0)).cast("bigint").alias("total_reviews"),
-            F.coalesce(F.col("avg_rating"), F.lit(0)).cast("decimal(3,2)").alias("avg_rating"),
+            F.coalesce(F.col("avg_rating"), F.lit(0)).cast("decimal(10,2)").alias("avg_rating"),
             F.coalesce(F.col("rating_5_count"), F.lit(0)).cast("bigint").alias("rating_5_count"),
             F.coalesce(F.col("rating_4_count"), F.lit(0)).cast("bigint").alias("rating_4_count"),
             F.coalesce(F.col("rating_3_count"), F.lit(0)).cast("bigint").alias("rating_3_count"),
@@ -58,16 +55,7 @@ def d_restaurant_reviews():
             # Sentiment Stats
             F.coalesce(F.col("sentiment_positive_count"), F.lit(0)).cast("bigint").alias("sentiment_positive_count"),
             F.coalesce(F.col("sentiment_neutral_count"), F.lit(0)).cast("bigint").alias("sentiment_neutral_count"),
-            F.coalesce(F.col("sentiment_negative_count"), F.lit(0)).cast("bigint").alias("sentiment_negative_count"),
-            
-            # Recency
-            F.col("last_review_date"),
-            F.when(
-                F.col("last_review_date").isNotNull(), 
-                F.datediff(F.current_date(), F.col("last_review_date"))
-            ).otherwise(F.lit(None)).alias("days_since_last_review"),
-            
-            F.current_timestamp().alias("_ingestion_timestamp")
+            F.coalesce(F.col("sentiment_negative_count"), F.lit(0)).cast("bigint").alias("sentiment_negative_count")
         )
     )
     return df_restaurant_reviews

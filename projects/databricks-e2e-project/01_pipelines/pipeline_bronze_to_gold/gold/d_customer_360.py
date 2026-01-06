@@ -4,7 +4,6 @@ from pyspark.sql.window import Window
 
 @dp.materialized_view(
     name="03_gold.d_customer_360",
-    partition_cols=["customer_id"],
     table_properties={"quality": "gold"}
 )
 def d_customer_360():
@@ -22,7 +21,6 @@ def d_customer_360():
             F.sum("total_amount").alias("lifetime_spend"),
             F.round(F.avg("total_amount"), 2).alias("avg_order_value"),
             F.max("order_date").alias("last_order_date"),
-            F.datediff(F.current_date(), F.max("order_date")).alias("days_since_last_order")
         )
     )
 
@@ -62,7 +60,6 @@ def d_customer_360():
         .join(df_fav_item, "customer_id", "left")    
         .select(
             F.col("customer_id"),
-            F.current_date().alias("snapshot_date"),
             F.col("name").alias("customer_name"),
             F.col("email"),
             df_customers.city,
@@ -70,10 +67,9 @@ def d_customer_360():
 
             # Order Stats
             F.coalesce(F.col("total_orders"), F.lit(0)).cast("bigint").alias("total_orders"),
-            F.coalesce(F.col("lifetime_spend"), F.lit(0)).cast("decimal(12,2)").alias("lifetime_spend"),
+            F.coalesce(F.col("lifetime_spend"), F.lit(0)).cast("decimal(10,2)").alias("lifetime_spend"),
             F.coalesce(F.col("avg_order_value"), F.lit(0)).cast("decimal(10,2)").alias("avg_order_value"),
             F.col("last_order_date"),
-            F.coalesce(F.col("days_since_last_order"), F.lit(None)).alias("days_since_last_order"),
             
             # Loyalty Tier
             F.when(F.col("lifetime_spend") >= 5000, "Platinum")
@@ -86,21 +82,13 @@ def d_customer_360():
             F.col("favorite_item"),
             
             # Review Stats
-            F.coalesce(F.col("avg_rating_given"), F.lit(0)).cast("decimal(3,2)").alias("avg_rating_given"),
+            F.coalesce(F.col("avg_rating_given"), F.lit(0)).cast("decimal(10,2)").alias("avg_rating_given"),
             F.coalesce(F.col("total_reviews"), F.lit(0)).cast("bigint").alias("total_reviews"),
-            
-            # Risk Flags
-            F.when(
-                (F.col("days_since_last_order") > 90) | (F.col("days_since_last_order").isNull()), 
-                True
-            ).otherwise(False).alias("is_at_risk"),
             
             F.when(
                 F.col("lifetime_spend") >= 5000, 
                 True
-            ).otherwise(False).alias("is_vip"),
-            
-            F.current_timestamp().alias("_ingestion_timestamp")
+            ).otherwise(False).alias("is_vip")
         )
     )
     return df_c360
