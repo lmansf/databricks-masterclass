@@ -20,8 +20,7 @@ SELECT
   get_json_object(analysis_json, '$.issue_pricing_reason') AS issue_pricing_reason,
   get_json_object(analysis_json, '$.issue_portion_size') AS issue_portion_size,
   get_json_object(analysis_json, '$.issue_portion_size_reason') AS issue_portion_size_reason,
-  review_timestamp,
-  current_timestamp() as _ingestion_timestamp
+  review_timestamp
 FROM (
   SELECT
     *,
