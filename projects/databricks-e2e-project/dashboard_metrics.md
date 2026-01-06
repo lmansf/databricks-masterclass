@@ -1,40 +1,34 @@
-## 14 Key Insights for Dashboard
+## Restaurant Chain Performance Dashboard
 
-### Sales & Revenue (4)
-- Total Revenue - SUM(total_amount) from orders
-- Average Order Value (AOV) - AVG(total_amount) from orders
-- Revenue Growth Rate - Month-over-month % change
-- Revenue by Order Type - Breakdown: dine-in/takeaway/delivery
+> Filter by date range (start_date, end_date)
 
-### Order Metrics (4)
-- Total Orders - COUNT(DISTINCT order_id)
-- Orders by Day of Week - Identify busiest days (day / order count)
-- Peak Order Hours - Top 3 hours by order volume (hour / order count)
-- Weekend vs Weekday Orders - Compare is_weekend = TRUE/FALSE
+* Total Orders 
+* Total Revenue
+* Active Customers
+* AOV (Average Order Value)
+* Unique Customers
+* Daily Sales
+* Best Selling Items
+* Order Volume By DOW (Day of Week)
+* Peak Hour Analysis (Heatmap Day/Hour)
+* Revenue By Order Type
+* Revenue By Food Category
 
-### Menu Performance (3)
-- Best-Selling Items - Top 10 by quantity sold from order_items
-- Revenue by Category - Starter/Main/Dessert/Beverage breakdown
-- Average Items per Order - AVG(item_count)
+## Review Insights Dashboard
 
-### Customer Metrics (3)
-- Total Active Customers - Unique customers with orders
-- Loyalty Tier Distribution - % Bronze/Silver/Gold/Platinum
-- Customer Growth Rate: New customers per month (% increase)
-
-
-## 7 Key Insights for GenAI Dashboard
-
-Filter by restaurant, date range;
+> Filter by restaurant name
 
 * Review Volume over time
-* Sentiment trend (Line chart showing positive/negative trend over time)
-* Top (3) praised items 
-* Most (3) criticized items 
-* Recent Review feed
-* AI auto-categorizes negative reviews:
-    - Delivery issues (%)
-    - Food quality (%)
-    - Service (%)
-    - Pricing (%)
-    - Portion size (%)
+* Avg Rating
+* City
+* Positive Review Counts
+* Neutral Review Counts
+* Negative Review Counts
+* Sentiment Trend (Line chart showing positive / neutral / negative trend over time)
+* Ratings Distribution
+* Issue Categorization
+  - Delivery
+  - Food Quality
+  - Pricing
+  - Portion Size
+* Recent Review Feed (Positive / Negative)
