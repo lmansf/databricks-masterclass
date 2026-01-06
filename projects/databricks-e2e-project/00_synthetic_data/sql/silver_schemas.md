@@ -1,7 +1,8 @@
 ## Silver Layer Table Schemas (Databricks)
 
+### Fact Tables
 ```sql
-CREATE TABLE `02_silver`.fact_orders (
+CREATE TABLE IF NOT EXISTS `02_silver`.fact_orders (
     order_id STRING PRIMARY KEY,
     order_timestamp TIMESTAMP,
     order_date DATE,
@@ -18,7 +19,7 @@ CREATE TABLE `02_silver`.fact_orders (
     _ingestion_timestamp TIMESTAMP
 )
 
-CREATE TABLE `02_silver`.fact_order_items (
+CREATE TABLE IF NOT EXISTS `02_silver`.fact_order_items (
     order_id STRING,
     item_id STRING,
     restaurant_id STRING,
@@ -33,7 +34,7 @@ CREATE TABLE `02_silver`.fact_order_items (
     PRIMARY KEY (order_id, item_id)
 )
 
-CREATE TABLE `02_silver`.fact_reviews (
+CREATE TABLE IF NOT EXISTS `02_silver`.fact_reviews (
     review_id STRING PRIMARY KEY,
     order_id STRING,
     customer_id STRING,
@@ -53,5 +54,38 @@ CREATE TABLE `02_silver`.fact_reviews (
     review_timestamp TIMESTAMP,
     _ingestion_timestamp TIMESTAMP
 )
-CLUSTER BY (review_date)
+```
+
+
+### Dim Tables
+```sql
+CREATE TABLE IF NOT EXISTS `02_silver`.dim_menu_items (
+  restaurant_id STRING,
+  item_id STRING,
+  name STRING,
+  category STRING,
+  price DECIMAL(10,2),
+  ingredients STRING,
+  is_vegetarian BOOLEAN,
+  spice_level STRING
+);
+
+CREATE TABLE IF NOT EXISTS `02_silver`.dim_restaurants (
+  restaurant_id STRING,
+  name STRING,
+  city STRING,
+  country STRING,
+  address STRING,
+  opening_date DATE,
+  phone STRING
+);
+
+CREATE TABLE IF NOT EXISTS `02_silver`.dim_customers (
+  customer_id STRING,
+  name STRING,
+  email STRING,
+  phone STRING,
+  city STRING,
+  join_date STRING
+);
 ```
